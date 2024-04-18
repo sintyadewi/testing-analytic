@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Database\Factories\OrderItemFactory;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,6 +25,11 @@ class OrderItem extends Model
         'price',
         'sub_total'
     ];
+
+    protected static function newFactory(): Factory
+    {
+        return OrderItemFactory::new();
+    }
 
     public function order(): BelongsTo
     {
