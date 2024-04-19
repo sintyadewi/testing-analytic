@@ -14,22 +14,22 @@ enum AnalyticTypeEnum: string
     public static function getTotalAmountType(OrderStatusEnum $status): self
     {
         $types = [
-            OrderStatusEnum::COMPLETED => self::TOTAL_AMOUNT_COMPLETED,
-            OrderStatusEnum::IN_PROGRESS => self::TOTAL_AMOUNT_IN_PROGRESS,
-            OrderStatusEnum::WAITING_PAYMENT => self::TOTAL_AMOUNT_WAITING_PAYMENT,
+            OrderStatusEnum::COMPLETED->value => self::TOTAL_AMOUNT_COMPLETED,
+            OrderStatusEnum::IN_PROGRESS->value => self::TOTAL_AMOUNT_IN_PROGRESS,
+            OrderStatusEnum::WAITING_PAYMENT->value => self::TOTAL_AMOUNT_WAITING_PAYMENT,
         ];
 
-        return $types[$status];
+        return $types[$status->value];
     }
 
     public static function getTotalSalesType(OrderStatusEnum $status): self
     {
         $types = [
-            OrderStatusEnum::COMPLETED => self::TOTAL_SALES_COMPLETED,
-            OrderStatusEnum::IN_PROGRESS => self::TOTAL_SALES_IN_PROGRESS,
-            OrderStatusEnum::WAITING_PAYMENT => self::TOTAL_SALES_WAITING_PAYMENT,
+            OrderStatusEnum::COMPLETED->value => self::TOTAL_SALES_COMPLETED,
+            OrderStatusEnum::IN_PROGRESS->value => self::TOTAL_SALES_IN_PROGRESS,
+            OrderStatusEnum::WAITING_PAYMENT->value => self::TOTAL_SALES_WAITING_PAYMENT,
         ];
 
-        return $types[$status];
+        return $types[$status->value];
     }
 }
