@@ -51,7 +51,7 @@ class CreateDailyAnalytic extends Command
             ->whereDate('updated_at', now());
     }
 
-    protected function upsertAnalytic($type, $total): void
+    protected function upsertAnalytic(AnalyticTypeEnum $type, float|int $total): void
     {
         $currentDate = now();
         $dailyDate = $currentDate->toDateString();
