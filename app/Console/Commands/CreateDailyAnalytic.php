@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\AnalyticTypeEnum;
 use App\Enums\OrderStatusEnum;
 use App\Models\Analytic;
 use App\Models\Order;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 
 class CreateDailyAnalytic extends Command
 {
@@ -37,51 +37,35 @@ class CreateDailyAnalytic extends Command
 
     protected function insert(OrderStatusEnum $status): void
     {
-        $totalAmount = $this->getTotalAmount($status);
-        $totalSales  = $this->getTotalSales($status);
+        $totalAmount = $this->orderQuery($status)->count();
+        $totalSales  = $this->orderQuery($status)->sum('total');
 
-        $this->upsertAnalytic($status->getTotalAmountType(), $totalAmount);
-        $this->upsertAnalytic($status->getTotalSalesType(), $totalSales);
+        $this->upsertAnalytic(AnalyticTypeEnum::getTotalAmountType($status), $totalAmount);
+        $this->upsertAnalytic(AnalyticTypeEnum::getTotalSalesType($status), $totalSales);
     }
 
-    protected function getTotalAmount(OrderStatusEnum $status): int
+    protected function orderQuery(OrderStatusEnum $status): Builder
     {
         return Order::query()
             ->whereStatus($status)
-            ->whereDate('created_at', now())
-            ->count();
-    }
-
-    protected function getTotalSales(OrderStatusEnum $status): float
-    {
-        return Order::query()
-            ->whereStatus($status)
-            ->whereDate('created_at', now())
-            ->sum('total');
+            ->whereDate('updated_at', now());
     }
 
     protected function upsertAnalytic($type, $total): void
     {
-        $currentDate = Carbon::now();
+        $currentDate = now();
         $dailyDate = $currentDate->toDateString();
         $weeklyDate = $currentDate->endOfWeek()->toDateString();
         $monthlyDate = $currentDate->endOfMonth()->toDateString();
 
-        Analytic::upsert(
+        Analytic::updateOrCreate(
             [
-                'type'  => $type,
-                'total' => $total,
+                'type' => $type,
                 'daily_date' => $dailyDate,
                 'weekly_date' => $weeklyDate,
                 'monthly_date' => $monthlyDate,
             ],
-            uniqueBy: [
-                'type',
-                'daily_date',
-                'weekly_date',
-                'monthly_date',
-            ],
-            update: ['total']
+            ['total' => $total]
         );
     }
 }
