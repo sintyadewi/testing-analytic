@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\AnalyticTypeEnum;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,5 +26,8 @@ class Analytic extends Model
 
     protected $casts = [
         'type' => AnalyticTypeEnum::class,
+        'daily_date' => 'date',
+        'weekly_date' => 'date',
+        'monthly_date' => 'date',
     ];
 }
