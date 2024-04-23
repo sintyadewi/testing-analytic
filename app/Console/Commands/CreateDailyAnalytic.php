@@ -46,12 +46,18 @@ class CreateDailyAnalytic extends Command
 
     protected function getTotalAmount(OrderStatusEnum $status): int
     {
-        return Order::query()->whereStatus($status)->count();
+        return Order::query()
+            ->whereStatus($status)
+            ->whereDate('created_at', now())
+            ->count();
     }
 
     protected function getTotalSales(OrderStatusEnum $status): float
     {
-        return Order::query()->whereStatus($status)->sum('total');
+        return Order::query()
+            ->whereStatus($status)
+            ->whereDate('created_at', now())
+            ->sum('total');
     }
 
     protected function upsertAnalytic($type, $total): void
